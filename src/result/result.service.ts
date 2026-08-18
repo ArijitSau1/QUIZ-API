@@ -9,6 +9,7 @@ import { Result } from './entities/result.entity';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { SubmitResultDto } from './dto/submit-result.dto';
+import { NodeMailerService } from 'src/node-mailer/node-mailer.service';
 
 @Injectable()
 export class ResultService {
@@ -18,6 +19,7 @@ export class ResultService {
     @InjectRepository(Quiz) private readonly quizRepository: Repository<Quiz>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
+    private readonly nodeMailerService: NodeMailerService
   ) {}
 
   async submit(accountId: string, dto: SubmitResultDto) {
@@ -76,7 +78,14 @@ export class ResultService {
       totalQuestions: quiz.questions.length,
     });
 
-    return this.resultRepository.save(result);
+    const savedResult = await this.resultRepository.save(result);
+       this.nodeMailerService.sendEmail(
+       accountId,
+       score,
+       quiz.questions.length,
+    );
+
+return savedResult;
   }
 
   async myResult(accountId: string) {

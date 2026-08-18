@@ -12,6 +12,7 @@ import { QuestionModule } from './question/question.module';
 import { QuizModule } from './quiz/quiz.module';
 import { ResultModule } from './result/result.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { NodeMailerModule } from './node-mailer/node-mailer.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CacheModule } from '@nestjs/cache-manager';
      QuestionModule,
      QuizModule,
      ResultModule,
+     NodeMailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

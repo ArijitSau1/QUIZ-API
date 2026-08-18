@@ -5,8 +5,10 @@ import { SubmitResultDto } from './dto/submit-result.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Account } from 'src/account/entities/account.entity';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRole } from 'src/enum';
+import { PermissionAction, UserRole } from 'src/enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
+import { CheckPermissions } from 'src/auth/decorators/permissions.decorator';
 
 @Controller('result')
 export class ResultController {
@@ -25,14 +27,16 @@ export class ResultController {
 }
 
 @Get('all')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard,PermissionsGuard)
+@CheckPermissions([PermissionAction.READ,'result'])
 @Roles(UserRole.ADMIN)
 findAllResults() {
   return this.resultService.findAllResults();
 }
 
 @Patch(':id/winner')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard,PermissionsGuard)
+@CheckPermissions([PermissionAction.UPDATE, 'result'])
 @Roles(UserRole.ADMIN)
 publishWinner(@Param('id') id: string) {
   return this.resultService.publishWinner(id);

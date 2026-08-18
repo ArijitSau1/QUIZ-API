@@ -12,6 +12,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt.guards';
 import { RolesGuard } from './guards/roles.guard';
 import { UserPermission } from 'src/user-permissions/entities/user-permission.entity';
+import { CaslAbilityFactory } from './factory/casl-ability.factory';
 
 
 @Module({
@@ -41,7 +42,8 @@ import { UserPermission } from 'src/user-permissions/entities/user-permission.en
     AuthService,
     JwtStrategy,
     JwtAuthGuard,
-    RolesGuard
+    RolesGuard,
+    CaslAbilityFactory
   ],
   exports: [
     AuthService,
@@ -49,7 +51,8 @@ import { UserPermission } from 'src/user-permissions/entities/user-permission.en
     PassportModule,
     JwtModule,
   JwtAuthGuard,
-  RolesGuard
+  RolesGuard,
+  CaslAbilityFactory
   ],
 })
 export class AuthModule {}
