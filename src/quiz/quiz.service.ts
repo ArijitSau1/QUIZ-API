@@ -17,11 +17,13 @@ export class QuizService {
     return this.quizRepository.save(quiz);
   }
 
-  async findAll() {
-    return this.quizRepository.find({
-      relations: {questions: true}
-    });
-  }
+ async findAll() {
+  const today = new Date().toISOString().split('T')[0];
+  return this.quizRepository.find({
+    // where: {quizDate: today},
+    relations: {questions: true}
+  });
+}
 
   async findOne(id: string) {
     const quiz = await this.quizRepository.findOne({

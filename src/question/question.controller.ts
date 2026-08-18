@@ -17,22 +17,22 @@ export class QuestionController {
         return this.questionService.create(dto);
      }
 
-     @Get()
-     findAll(){
-        return this.questionService.findAll()
-     }
 
      @Get(':id')
+     @UseGuards(AuthGuard('jwt'))
         findOne(@Param('id',ParseIntPipe) id:string){
             return this.questionService.findOne(id)
         }
      
 
      @Delete(':id')
-     remove(@Param('id', ParseIntPipe) id: string) {
+      @UseGuards(AuthGuard('jwt'), RolesGuard)
+     @Roles(UserRole.ADMIN)
+      remove(@Param('id') id: string) {
      return this.questionService.remove(id);
-  }
 }
+  }
+
 
 
 

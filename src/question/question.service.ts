@@ -33,10 +33,6 @@ export class QuestionService {
   return this.questionRepository.save(question);
 }
 
-  async findAll() {
-    return this.questionRepository.find();
-  }
-
   async findOne(id: string) {
     const question = await this.questionRepository.findOne({
       where: { id }

@@ -95,7 +95,11 @@ export class ResultService {
   }
 
   async findAllResults() {
+     const today = new Date().toISOString().split('T')[0];
     return this.resultRepository.find({
+    //   where: {
+    //   quiz: {quizDate: today}
+    // },
       relations: { account: true, quiz: true },
       order: { score: 'DESC' },
     });

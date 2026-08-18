@@ -39,6 +39,7 @@ publishWinner(@Param('id') id: string) {
 }
 
 @Get('winner/:quizId')
+@UseGuards(AuthGuard('jwt'))
 getWinner(@Param('quizId') quizId: string) {
   return this.resultService.getWinner(quizId);
 }
