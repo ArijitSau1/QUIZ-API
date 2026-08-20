@@ -6,7 +6,6 @@ export class SubmitResultDto {
   quizId: string;
 
   @IsArray()
-  @IsString()
   answers: {
   questionId: string;
   answer: string;

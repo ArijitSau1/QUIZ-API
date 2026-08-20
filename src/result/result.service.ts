@@ -19,7 +19,7 @@ export class ResultService {
     @InjectRepository(Quiz) private readonly quizRepository: Repository<Quiz>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
-    private readonly nodeMailerService: NodeMailerService
+    private readonly nodeMailerService: NodeMailerService,
   ) {}
 
   async submit(accountId: string, dto: SubmitResultDto) {
@@ -59,10 +59,35 @@ export class ResultService {
 
     let score = 0;
     for (const userAnswer of dto.answers) {
-      const question = quiz.questions.find(
-        (q) => q.id === userAnswer.questionId,
-      );
-      if (question && question.answer === userAnswer.answer) {
+      const question = await this.questionRepository
+        .createQueryBuilder('question')
+        .leftJoin('question.quiz', 'quiz')
+        .where('question.id = :questionId', {
+          questionId: userAnswer.questionId,
+        })
+        .andWhere('quiz.id = :quizId', {
+          quizId: dto.quizId,
+        })
+        .getOne();
+
+      if (!question) {
+        throw new BadRequestException('Question does not belong to this quiz');
+      }
+
+      const options = [
+        question.optionA,
+        question.optionB,
+        question.optionC,
+        question.optionD,
+      ];
+
+      if (!options.includes(userAnswer.answer)) {
+        throw new BadRequestException(
+          `Invalid answer for question "${question.question}"`,
+        );
+      }
+
+      if (question.answer === userAnswer.answer) {
         score++;
       }
     }
@@ -79,13 +104,9 @@ export class ResultService {
     });
 
     const savedResult = await this.resultRepository.save(result);
-       this.nodeMailerService.sendEmail(
-       accountId,
-       score,
-       quiz.questions.length,
-    );
+    this.nodeMailerService.sendEmail(accountId, score, quiz.questions.length);
 
-return savedResult;
+    return savedResult;
   }
 
   async myResult(accountId: string) {
@@ -103,16 +124,19 @@ return savedResult;
     return result;
   }
 
-  async findAllResults() {
-     const today = new Date().toISOString().split('T')[0];
-    return this.resultRepository.find({
-    //   where: {
-    //   quiz: {quizDate: today}
-    // },
-      relations: { account: true, quiz: true },
-      order: { score: 'DESC' },
-    });
-  }
+async findAllResults() {
+  const today = new Date().toISOString().split('T')[0];
+
+  return this.resultRepository
+    .createQueryBuilder('result')
+    .leftJoinAndSelect('result.account', 'account')
+    .leftJoinAndSelect('result.quiz', 'quiz')
+    .where('quiz.quizDate = :today', {
+      today,
+    })
+    .orderBy('result.score', 'DESC')
+    .getMany();
+}
 
   async publishWinner(id: string) {
     const result = await this.resultRepository.findOne({

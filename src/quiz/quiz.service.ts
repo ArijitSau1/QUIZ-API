@@ -17,12 +17,15 @@ export class QuizService {
     return this.quizRepository.save(quiz);
   }
 
- async findAll() {
+async findAll() {
   const today = new Date().toISOString().split('T')[0];
-  return this.quizRepository.find({
-    // where: {quizDate: today},
-    relations: {questions: true}
-  });
+  return this.quizRepository
+    .createQueryBuilder('quiz')
+    .leftJoinAndSelect('quiz.questions', 'question')
+    .where('today as date', {
+      today,
+    })
+    .getMany();
 }
 
   async findOne(id: string) {

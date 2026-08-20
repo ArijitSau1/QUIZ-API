@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Question } from './entities/question.entity';
@@ -12,12 +12,49 @@ export class QuestionService {
 ) {}
 
   async create(dto: CreateQuestionDto) {
+
+    if (!dto.quizId) {
+    throw new BadRequestException('Quiz ID is required');
+  }
   const findQuiz = await this.quizRepository.findOne({
     where: { id: dto.quizId },
   });
 
   if (!findQuiz) {
-    throw new NotFoundException(`Quiz with id ${dto.quizId} not found`);
+    throw new NotFoundException(`Quiz not found`);
+  }
+
+  const existingQuestion = await this.questionRepository.findOne({
+    where: {
+      question: dto.question,
+      quiz: { id: dto.quizId },
+    },
+  });
+
+  if (existingQuestion) {
+    throw new ConflictException(
+      'This question already exists in this quiz',
+    );
+  }
+
+    const options = [
+    dto.optionA,
+    dto.optionB,
+    dto.optionC,
+    dto.optionD,
+  ];
+
+  if (!options.includes(dto.answer)) {
+  throw new BadRequestException(
+    'Answer must match one of the options',
+  );
+}
+  const uniqueOptions = new Set(options);
+
+  if (uniqueOptions.size !== 4) {
+    throw new ConflictException(
+      'Options cannot be duplicated',
+    );
   }
 
   const question = this.questionRepository.create({
