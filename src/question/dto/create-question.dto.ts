@@ -1,25 +1,21 @@
-import {IsNotEmpty,IsString, IsUUID,} from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateQuestionDto {
+
   @IsNotEmpty()
   @IsString()
   question: string;
 
-  @IsNotEmpty()
-  @IsString()
-  optionA: string;
-
-  @IsNotEmpty()
-  @IsString()
-  optionB: string;
-
-  @IsNotEmpty()
-  @IsString()
-  optionC: string;
-
-  @IsNotEmpty()
-  @IsString()
-  optionD: string;
+  @IsArray()
+  @ArrayMinSize(2)
+  @IsString({ each: true })
+  options: string[];
 
   @IsNotEmpty()
   @IsString()

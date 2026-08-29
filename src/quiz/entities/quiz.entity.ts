@@ -18,6 +18,9 @@ export class Quiz {
 
   @Column({ type: 'enum',enum: QuizStatus,default: QuizStatus.PUBLISHED})
   status: QuizStatus;
+  
+  @Column({ nullable: true })
+  image: string;
 
   @CreateDateColumn()
   createdAt: Date;

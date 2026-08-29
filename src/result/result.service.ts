@@ -74,12 +74,7 @@ export class ResultService {
         throw new BadRequestException('Question does not belong to this quiz');
       }
 
-      const options = [
-        question.optionA,
-        question.optionB,
-        question.optionC,
-        question.optionD,
-      ];
+      const options = question.options;
 
       if (!options.includes(userAnswer.answer)) {
         throw new BadRequestException(
@@ -129,8 +124,25 @@ async findAllResults() {
 
   return this.resultRepository
     .createQueryBuilder('result')
-    .leftJoinAndSelect('result.account', 'account')
-    .leftJoinAndSelect('result.quiz', 'quiz')
+    .leftJoin('result.account', 'account')
+    .leftJoin('result.quiz', 'quiz')
+    .select([
+      'result.id',
+      'result.score',
+      'result.totalQuestions',
+      'result.isWinner',
+      'result.submittedAt',
+
+      'account.id',
+      'account.email',
+
+      'quiz.id',
+      'quiz.title',
+      'quiz.description',
+      'quiz.quizDate',
+      'quiz.status',
+      'quiz.createdAt',
+    ])
     .where('quiz.quizDate = :today', {
       today,
     })

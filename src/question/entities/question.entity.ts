@@ -14,25 +14,16 @@ export class Question {
   @Column({ type: 'text' })
   question: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  optionA: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  optionB: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  optionC: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  optionD: string;
+  @Column({ type: 'json' })
+  options: string[];
 
   @Column({ type: 'varchar', length: 255 })
   answer: string;
 
   @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
-  cascade: true,
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE',
- })
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   quiz: Quiz;
 }

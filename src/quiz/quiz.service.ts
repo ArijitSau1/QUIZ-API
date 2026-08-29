@@ -34,7 +34,7 @@ async findAll() {
       relations: {questions: true}
     });
 
-    if (!quiz) {throw new NotFoundException(`Quiz with id ${id} not found`);
+    if (!quiz) {throw new NotFoundException('Quiz with id  not found');
     }
     return quiz;
   }
@@ -44,10 +44,24 @@ async findAll() {
       where: { id },
     });
 
-    if (!quiz) {throw new NotFoundException(`Quiz with id ${id} not found`);
+    if (!quiz) {throw new NotFoundException('Quiz with id  not found');
     }
     quiz.status = QuizStatus.CLOSED;
 
     return this.quizRepository.save(quiz);
   }
+
+  async uploadImage(id: string, imagePath: string) {
+  const quiz = await this.quizRepository.findOne({
+    where: { id },
+  });
+
+  if (!quiz) {
+    throw new NotFoundException('Quiz not found');
+  }
+
+  quiz.image = imagePath;
+
+  return this.quizRepository.save(quiz);
+}
 }
