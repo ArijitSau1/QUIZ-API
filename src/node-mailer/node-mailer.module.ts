@@ -13,7 +13,7 @@ import { NodeMailerService } from './node-mailer.service';
         tls: { rejectUnauthorized: true },
         auth: {
           user: 'arijitsau45@gmail.com', //admin gmail id
-          pass: 'yggx nbxx kwme pevi',
+          pass: '',
         },
       },
     })
