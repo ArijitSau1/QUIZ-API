@@ -9,7 +9,7 @@ import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
 import { CheckPermissions } from 'src/auth/decorators/permissions.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname } from 'node:path';
 
 
 @Controller('quiz')

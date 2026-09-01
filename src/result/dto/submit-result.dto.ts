@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class SubmitResultDto {
   @IsNotEmpty()

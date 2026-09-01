@@ -10,7 +10,7 @@ import { CreatePermissionDto } from './dto/create-permission.dto';
 export class PermissionsService {
   constructor(
     @InjectRepository(Permission) private readonly repo: Repository<Permission>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async create(@Body() createPermissionDto:CreatePermissionDto){

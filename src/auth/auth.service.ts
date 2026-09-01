@@ -16,11 +16,11 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class AuthService {
  constructor(
-  private jwtService: JwtService,
+  private readonly jwtService: JwtService,
   @InjectRepository(Account) private readonly repo: Repository<Account>,
   @InjectRepository(UserPermission)
   private readonly upRepo: Repository<UserPermission>,
-  @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
 ) {}
 
   async signIn(email: string, password: string) {
@@ -43,7 +43,7 @@ export class AuthService {
     return this.getPermissions(accountId);
   }
 
-   private getPermissions = async (accountId: string): Promise<any> => {
+   private readonly getPermissions = async (accountId: string): Promise<any> => {
     let result = await this.cacheManager.get('userPermission' + accountId);
     if (!result) {
       result = await this.upRepo.find({
@@ -63,7 +63,7 @@ export class AuthService {
   };
   
 
-  private getUserDetails = async (
+  private readonly getUserDetails = async (
     id: string,
   ): Promise<any> => {
     const query = this.repo
